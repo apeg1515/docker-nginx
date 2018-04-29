@@ -22,11 +22,16 @@ RUN apt-get update && apt-get install -y \
   && make \
   && make install \
   && cd /etc/init.d/ \
-  && wget https://raw.githubusercontent.com/JasonGiedymin/nginx-init-ubuntu/master/nginx \
+  && wget https://raw.githubusercontent.com/JasonGiedymin/nginx-init-ubuntu/master/nginx -O /etc/init.d/nginx \
+  # change permission on nginx.init script
+  && chmod +x /etc/init.d/nginx \
+  && update-rc.d -f nginx defaults \
 # possibly need to change ownership/persion on the nginx file that was downloaded
 # && sudo chmod +x nginx or chmod +x nginx
   && echo "NGINX_CONF_FILE=/etc/nginx/nginx.conf" > /etc/default/nginx \
-  && echo "DAEMON=/usr/bin/nginx" >> /etc/default/nginx
+  && echo "DAEMON=/usr/bin/nginx" >> /etc/default/nginx \
+  && service nginx status \
+  && service nginx restart \
 
 EXPOSE 80
 COPY nginx /etc/init.d
