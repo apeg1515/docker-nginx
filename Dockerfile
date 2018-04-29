@@ -21,6 +21,12 @@ RUN apt-get update && apt-get install -y \
   && ./configure --sbin-path=/usr/bin/nginx --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --with-debug --with-pcre --with-http_ssl_module --without-http_autoindex_module
   && make \
   && make install \
+  && cd /etc/init.d/ \
+  && wget https://raw.githubusercontent.com/JasonGiedymin/nginx-init-ubuntu/master/nginx \
+# possibly need to change ownership/persion on the nginx file that was downloaded
+# && sudo chmod +x nginx or chmod +x nginx
+  && echo "NGINX_CONF_FILE=/etc/nginx/nginx.conf" > /etc/default/nginx \
+  && echo "DAEMON=/usr/bin/nginx" >> /etc/default/nginx
 
 EXPOSE 80
 COPY nginx /etc/init.d
