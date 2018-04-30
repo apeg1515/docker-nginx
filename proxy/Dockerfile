@@ -15,8 +15,11 @@ RUN apt-get install -y \
   libpcrecpp0v5 \
   libssl-dev \
   zlib1g-dev
-RUN apt-get install wget -y
-RUN apt-get install -y nginx-plus-module-modsecurity nginx-plus-module-geoip nginx-plus-module-rtmp
+RUN apt-get install wget -y \
+  vim \
+  dialog \
+  net-tools
+# RUN apt-get install -y nginx-plus-module-modsecurity nginx-plus-module-geoip nginx-plus-module-rtmp
 
   # go the https://www.nginx.com/resources/wiki/start/topics/tutorials/install/ and copy the link to the "STABLE" version of NGINX
 # go to `https://www.nginx.com/resources/wiki/start/topics/tutorials/install/` and copy the Stable link
@@ -30,7 +33,15 @@ RUN cd nginx-1.10.1 \
   && make install
 # get nginx init script
 RUN wget https://raw.githubusercontent.com/JasonGiedymin/nginx-init-ubuntu/master/nginx -O /etc/init.d/nginx
-RUN chmod +x /etc/init.d/nginx
+RUN chmod +x /etc/init.d/nginx \
+#RUN cd /etc/init.d && ls -l nginx / \
+  && update-rc.d -f nginx defaults
+  # possibly need to change ownership/persion on the nginx file that was downloaded
+  # && sudo chmod +x nginx or chmod +x nginx
+RUN echo "NGINX_CONF_FILE=/etc/nginx/nginx.conf" > /etc/default/nginx
+RUN echo "DAEMON=/usr/bin/nginx" >> /etc/default/nginx \
+  && service nginx status
+  # && service nginx restart \
 
 ENV DEBIAN_FRONTEND teletype
 EXPOSE 80
